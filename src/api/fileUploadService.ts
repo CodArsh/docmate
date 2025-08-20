@@ -1,6 +1,5 @@
-import axios from "axios";
-
-const API_URL = "http://192.168.1.59:8080/file"; // change to your server
+import { postRequest } from "./apiHelper";
+import BaseSetting from "../config/settings";
 
 export const uploadFile = async (file: any) => {
   try {
@@ -13,13 +12,12 @@ export const uploadFile = async (file: any) => {
       name: file.name,
     });
 
-    const response = await axios.post(API_URL, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await postRequest(BaseSetting.endpoints.uploadFile, formData,
+      // @ts-ignore
+      { isMultipart: true }
+    )
 
-    return response.data;
+    return response;
   } catch (error: any) {
     console.error("Upload failed:", error.message);
     throw error;

@@ -18,7 +18,7 @@ const api = axios.create({
 api.interceptors.request.use(
   // @ts-ignore
   (config: AxiosRequestConfig) => {
-    const state = store.getState();
+    // const state = store.getState();
     // @ts-ignore
     // const token = state.userData?.userData?.accessToken;
 

@@ -4,7 +4,7 @@ import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './src/redux';
 import AppNavigator from './src/navigation/AppNavigator';
-import { StatusBar, LogBox } from 'react-native';
+import { StatusBar } from 'react-native';
 import LogoutModal from './src/components/LogoutModal/LogoutModal';
 import { useDispatch } from 'react-redux';
 import { clearUserData } from './src/redux/slices/userSlice';
