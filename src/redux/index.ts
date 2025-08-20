@@ -4,16 +4,17 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userReducer from './slices/userSlice';
 import tokenReducer from './slices/tokenSlice';
-
+import logoutReducer from './slices/logoutSlice'
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user', 'token'], // only persist these reducers
+  whitelist: ['user', 'token', 'logout'], // only persist these reducers
 };
 
 const rootReducer = combineReducers({
   user: userReducer,
   token: tokenReducer,
+  logout: logoutReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

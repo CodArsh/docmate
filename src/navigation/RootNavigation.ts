@@ -8,3 +8,11 @@ export function navigate(name: string, params?: object) {
   }
 }
 
+export function resetToSplash() {
+  if (navigationRef.isReady()) {
+    navigationRef.reset({
+      index: 0,
+      routes: [{ name: 'Login' as never }],
+    });
+  }
+}

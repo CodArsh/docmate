@@ -1,7 +1,7 @@
 import BaseSetting from '../config/settings';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { store } from '../redux';
-import { navigate } from '../config/RootNavigation';
+import { navigate } from '../navigation/RootNavigation';
 import { clearUserData } from '../redux/slices/userSlice';
 import ToastBox from 'react-native-simple-toast';
 
@@ -20,13 +20,13 @@ api.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const state = store.getState();
     // @ts-ignore
-    const token = state.userData?.userData?.accessToken;
+    // const token = state.userData?.userData?.accessToken;
 
     // Set Authorization token if it exists
-    if (token) {
-      // @ts-ignore
-      // config.headers['Authorization'] = `Bearer ${token}`;
-    }
+    // if (token) {
+    // @ts-ignore
+    // config.headers['Authorization'] = `Bearer ${token}`;
+    // }
 
     // Dynamically set Content-Type based on the isMultipart flag
     // @ts-ignore
@@ -65,10 +65,9 @@ const apiRequest = async <T>(
 ): Promise<T> => {
   try {
     const baseURL = BaseSetting.api;
-    console.log(data)
     const response: AxiosResponse<T> = await api.request({
       method,
-      url: 'http://localhost:8080',
+      url: baseURL + endpoint,
       data,
       baseURL, // Dynamically set the baseURL
       ...config,
@@ -90,7 +89,7 @@ export const postRequest = <T>(
   endpoint: string,
   data: any,
   config?: AxiosRequestConfig & { remoteConnected?: boolean },
-): Promise<T> => apiRequest('post', 'http://localhost:8080/signup', data, config);
+): Promise<T> => apiRequest('post', endpoint, data, config);
 
 export const putRequest = <T>(
   endpoint: string,

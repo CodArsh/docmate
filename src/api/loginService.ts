@@ -1,34 +1,30 @@
 import BaseSetting from '../config/settings';
 import { postRequest } from './apiHelper';
 
-export interface SignupPayload {
-    name: string;
-    number: string;
+export interface LoginPayload {
     email: string;
     password: string;
 }
-export interface SignupResponse {
+export interface LoginResponse {
     success: boolean;
     message: string;
     data?: any;
+    token: string
 }
 
-export const signupUser = async (payload: SignupPayload): Promise<SignupResponse> => {
+export const loginUser = async (payload: LoginPayload): Promise<LoginResponse> => {
     try {
         const params = {
-            name: payload.name,
-            number: payload.number,
             email: payload.email,
             password: payload.password
         }
-        const response = await postRequest<SignupResponse>(
-            BaseSetting.endpoints.signup,
+        const response = await postRequest<LoginResponse>(
+            BaseSetting.endpoints.login,
             params,
         );
-
         return response;
     } catch (error: any) {
-        console.log('Signup Error:', error);
+        console.log('Login Error:', error.message);
         throw error;
     }
 };

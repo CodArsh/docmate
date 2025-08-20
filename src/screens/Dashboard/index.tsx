@@ -4,11 +4,15 @@ import HeaderBar from 'rn-soft-headerbar'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles'
 import { fileTypes, recentUploads } from '../../config/constantsData';
+import { useDispatch } from 'react-redux';
+import { showLogoutModal } from '../../redux/slices/logoutSlice';
 const Dashboard = () => {
+    const dispatch = useDispatch()
+    
     return (
         <View style={{ flex: 1, backgroundColor: '#f1f1f1ff' }}>
             <StatusBar backgroundColor={'#007AFF'} barStyle={'light-content'} />
-            <HeaderBar title='Dashboard' backgroundColor='#007AFF' textColor='#fff' rightIcon={<Icon name="logout" size={22} color={'#fff'} />} />
+            <HeaderBar title='Dashboard' backgroundColor='#007AFF' textColor='#fff' rightIcon={<Icon name="logout" size={22} color={'#fff'} />} onRightPress={() => dispatch(showLogoutModal())} />
 
             <View style={styles.filesOuter}>
                 <Text style={styles.title}>Files</Text>
@@ -32,7 +36,6 @@ const Dashboard = () => {
 
             <View style={styles.filesOuter}>
                 <Text style={styles.title}>Recent uploads</Text>
-
                 {
                     recentUploads?.map((item) => {
                         return (

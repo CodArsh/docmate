@@ -1,32 +1,22 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { signupUser } from "../../api/signupService";
-import axios from "axios";
+import ToastBox from 'react-native-simple-toast';
+import { isEmpty } from 'lodash'
 
 const Signup = ({ navigation }: any) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSignup = async (name: string, number: string, email: string, password: string) => {
+ 
+  const handleSignup = async () => {
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("number", number);
-      formData.append("email", email);
-      formData.append("password", password);
-
-      const response = await axios.post("http://localhost:8080/signup", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      return response.data;
-    } catch (error: any) {
-      console.error("Signup Error:", error.response?.data || error.message);
-      throw error;
+      await signupUser({ name, number, email, password });
+      navigation.goBack()
+      ToastBox.show('User created successfully', 5);
+    } catch (err) {
+      ToastBox.show('User already exist', 5);
     }
   };
   return (
@@ -66,7 +56,7 @@ const Signup = ({ navigation }: any) => {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.btn} onPress={() => handleSignup()}>
+        <TouchableOpacity disabled={(isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(number))} style={[(isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(number)) ? styles.offBtn : styles.btn]} onPress={() => handleSignup()}>
           <Text style={styles.btnText}>Sign Up</Text>
         </TouchableOpacity>
 
@@ -101,12 +91,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
+    borderWidth:0.2,
+    marginBottom: 17,
     backgroundColor: "#f1f3f6",
     borderRadius: 12,
     padding: 14,
-    marginBottom: 15,
     fontSize: 16,
     color: "#333",
+  },
+  offBtn: {
+    backgroundColor: "#858585ff",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 5,
   },
   btn: {
     backgroundColor: "#007AFF",

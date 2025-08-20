@@ -1,9 +1,38 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
+import { isEmpty } from 'lodash'
+import { loginUser } from "../../api/loginService";
+import ToastBox from 'react-native-simple-toast';
+import { useDispatch } from "react-redux";
+import { setAccessToken } from "../../redux/slices/tokenSlice";
+import { setUserData } from "../../redux/slices/userSlice";
 
 const Login = ({ navigation }: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch()
+
+  const handleLogin = async () => {
+    try {
+      const response = await loginUser({ email, password });
+
+      dispatch(setAccessToken(response?.token))
+      dispatch(setUserData(response?.data))
+      navigation.reset({
+        routes: [{ name: 'Main' }],
+      });
+      ToastBox.show(response.message, 5);
+    } catch (error: any) {
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message;
+
+      if (status === 401 || status === 404) {
+        ToastBox.show(message, 5);
+        throw new Error(message);
+      }
+      throw new Error(message || 'Something went wrong');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -27,8 +56,8 @@ const Login = ({ navigation }: any) => {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.btn}>
-          <Text style={styles.btnText}>Login</Text>
+        <TouchableOpacity disabled={(isEmpty(email) || isEmpty(password))} style={[(isEmpty(email) || isEmpty(password)) ? styles.offBtn : styles.btn]} onPress={() => handleLogin()}>
+          <Text style={styles.btnText}>Sign Up</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
@@ -59,9 +88,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#f1f3f6",
     borderRadius: 12,
     padding: 14,
-    marginBottom: 15,
+    borderWidth: 0.2,
+    marginBottom: 17,
     fontSize: 16,
     color: "#333",
+  },
+  offBtn: {
+    backgroundColor: "#858585ff",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 5,
   },
   btn: {
     backgroundColor: "#007AFF",

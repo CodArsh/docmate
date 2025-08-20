@@ -5,12 +5,14 @@ interface UserState {
   id: string | null;
   name: string | null;
   email: string | null;
+  number: string | null;
 }
 
 const initialState: UserState = {
   id: null,
   name: null,
   email: null,
+  number: null,
 };
 
 const userSlice = createSlice({
@@ -18,14 +20,10 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserData: (state, action: PayloadAction<UserState>) => {
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
+      return action.payload; // ✅ replace whole state with user data
     },
-    clearUserData: (state) => {
-      state.id = null;
-      state.name = null;
-      state.email = null;
+    clearUserData: () => {
+      return initialState; // ✅ reset
     },
   },
 });
