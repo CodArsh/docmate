@@ -16,7 +16,8 @@ const BaseSetting = {
   endpoints: {
     login: '/login',
     signup: '/signup',
-    tokenVerify: '/token/verify'
+    tokenVerify: '/token/verify',
+    uploadFile:'/file'
   },
 };
 

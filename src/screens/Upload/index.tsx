@@ -1,19 +1,56 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { View, Text, Alert, TouchableOpacity } from "react-native";
+import { pick } from "@react-native-documents/picker";
+import { uploadFile } from "../../api/fileUploadService";
 import HeaderBar from "rn-soft-headerbar";
 import styles from "./styles";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import ToastBox from 'react-native-simple-toast';
 
 const Upload = () => {
-  const [fileName, setFileName] = useState<string>("No file selected");
+  const [loading, setLoading] = useState(false);
+  const [fileInfo, setFileInfo] = useState<any>(null);
 
-  const handleSelectFile = () => {
-    setFileName("example_document.pdf");
+  const handlePick = async () => {
+    try {
+      setLoading(true);
+      const files = await pick({
+        // @ts-ignore
+        multiple: false,
+      });
+
+      if (!files || files.length === 0) {
+        ToastBox.show('No file selected', 10)
+        setLoading(false);
+        return;
+      }
+
+      const file = files[0];
+      setFileInfo(file);
+      console.log("Picked file:", file);
+
+    } catch (error: any) {
+      console.error("Error picking :", error);
+      ToastBox.show(error.message, 10)
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpload = () => {
-    alert("File Uploaded Successfully 🚀");
-  };
+  const handleUpload = async () => {
+    try {
+      // ✅ Upload file to backend
+      const result = await uploadFile(fileInfo);
+      console.log('file... ', result)
+      ToastBox.show(result.message, 10)
+    } catch (error: any) {
+      console.error("Error uploading:", error);
+      ToastBox.show(error.message, 10)
+    } finally {
+      setLoading(false);
+      setFileInfo(null)
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -27,11 +64,11 @@ const Upload = () => {
           {/* File Name Field */}
           <View style={styles.inputBox}>
             <Icon name="insert-drive-file" size={22} color="#007AFF" />
-            <Text style={styles.fileName}>{fileName}</Text>
+            <Text style={styles.fileName}>{fileInfo?.name}</Text>
           </View>
 
           {/* Select File Button */}
-          <TouchableOpacity style={styles.selectBtn} onPress={handleSelectFile}>
+          <TouchableOpacity style={styles.selectBtn} onPress={handlePick}>
             <Icon name="attach-file" size={20} color="#fff" />
             <Text style={styles.selectText}>Select File</Text>
           </TouchableOpacity>
@@ -44,9 +81,7 @@ const Upload = () => {
         </View>
       </View>
     </View>
-
   );
-}
-export default Upload
+};
 
-
+export default Upload;
