@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     uploadBtn: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#34C759",
         paddingVertical: 14,
         borderRadius: 12,
         justifyContent: "center",

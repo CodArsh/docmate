@@ -62,6 +62,7 @@ const apiRequest = async <T>(
   endpoint: string,
   data?: any,
   config?: AxiosRequestConfig & { remoteConnected?: boolean },
+  options: { isMultipart?: boolean; onUploadProgress?: (progress: number) => void } = {}
 ): Promise<T> => {
   try {
     const baseURL = BaseSetting.api;
@@ -71,6 +72,12 @@ const apiRequest = async <T>(
       data,
       baseURL, // Dynamically set the baseURL
       ...config,
+      onUploadProgress: (progressEvent) => {
+        if (options.onUploadProgress) {
+          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+          options.onUploadProgress(percent);
+        }
+      },
     });
     return handleResponse(response);
   } catch (error) {
@@ -89,7 +96,8 @@ export const postRequest = <T>(
   endpoint: string,
   data: any,
   config?: AxiosRequestConfig & { remoteConnected?: boolean },
-): Promise<T> => apiRequest('post', endpoint, data, config);
+  options?: { isMultipart?: boolean; onUploadProgress?: (progress: number) => void }
+): Promise<T> => apiRequest('post', endpoint, data, config, options);
 
 export const putRequest = <T>(
   endpoint: string,

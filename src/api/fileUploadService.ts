@@ -1,7 +1,10 @@
 import { postRequest } from "./apiHelper";
 import BaseSetting from "../config/settings";
 
-export const uploadFile = async (file: any) => {
+export const uploadFile = async (
+  file: any,
+  onProgress?: (percent: number) => void
+) => {
   try {
     const formData = new FormData();
 
@@ -12,10 +15,12 @@ export const uploadFile = async (file: any) => {
       name: file.name,
     });
 
-    const response = await postRequest(BaseSetting.endpoints.uploadFile, formData,
-      // @ts-ignore
-      { isMultipart: true }
-    )
+    const response = await postRequest(
+      BaseSetting.endpoints.uploadFile,
+      formData,
+      { isMultipart: true }, // ✅ config
+      { onUploadProgress: onProgress } // ✅ forward progress callback
+    );
 
     return response;
   } catch (error: any) {

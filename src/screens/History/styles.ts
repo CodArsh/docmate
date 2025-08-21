@@ -5,22 +5,23 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#F4F6FA",
         padding: 16,
+        paddingTop: 0
     },
     card: {
         backgroundColor: "#fff",
         borderRadius: 8,
         padding: 16,
-        marginBottom: 14,
         shadowColor: "#ccc",
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 5 },
         shadowRadius: 10,
         elevation: 5,
+        marginTop: 15
     },
     infoRow: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: 12,
+        marginBottom: 12
     },
     fileName: {
         fontSize: 16,
@@ -39,12 +40,14 @@ const styles = StyleSheet.create({
     },
     actions: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        alignItems:'center',
+        justifyContent: "flex-end",
         marginTop: 10,
     },
     actionBtn: {
         flexDirection: "row",
         alignItems: "center",
+        marginLeft:25
     },
     actionText: {
         fontSize: 14,

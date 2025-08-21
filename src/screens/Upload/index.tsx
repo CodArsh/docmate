@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Alert, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { pick } from "@react-native-documents/picker";
 import { uploadFile } from "../../api/fileUploadService";
 import HeaderBar from "rn-soft-headerbar";
@@ -7,9 +7,11 @@ import styles from "./styles";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ToastBox from 'react-native-simple-toast';
 
+
 const Upload = () => {
   const [loading, setLoading] = useState(false);
   const [fileInfo, setFileInfo] = useState<any>(null);
+  const [progress, setProgress] = useState(0);
 
   const handlePick = async () => {
     try {
@@ -39,18 +41,18 @@ const Upload = () => {
 
   const handleUpload = async () => {
     try {
-      // ✅ Upload file to backend
-      const result = await uploadFile(fileInfo);
-      console.log('file... ', result)
-      ToastBox.show(result.message, 10)
+      const result = await uploadFile(fileInfo, (p) => setProgress(p)) as { message: string };
+      console.log("Upload response:", result);
+      ToastBox.show(result.message, 10);
     } catch (error: any) {
       console.error("Error uploading:", error);
-      ToastBox.show(error.message, 10)
+      ToastBox.show(error.message, 10);
     } finally {
       setLoading(false);
-      setFileInfo(null)
+      setFileInfo(null);
+      setProgress(0)
     }
-  }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -62,10 +64,13 @@ const Upload = () => {
           <Text style={styles.title}>Upload Your File</Text>
 
           {/* File Name Field */}
-          <View style={styles.inputBox}>
-            <Icon name="insert-drive-file" size={22} color="#007AFF" />
-            <Text style={styles.fileName}>{fileInfo?.name}</Text>
-          </View>
+          {
+            fileInfo?.name && <View style={styles.inputBox}>
+              <Icon name="insert-drive-file" size={22} color="#007AFF" />
+              <Text style={styles.fileName}>{fileInfo?.name}</Text>
+            </View>
+          }
+
 
           {/* Select File Button */}
           <TouchableOpacity style={styles.selectBtn} onPress={handlePick}>
@@ -74,11 +79,14 @@ const Upload = () => {
           </TouchableOpacity>
 
           {/* Upload Button */}
-          <TouchableOpacity style={styles.uploadBtn} onPress={handleUpload}>
+          <TouchableOpacity disabled={fileInfo === null || progress > 0} style={[styles.uploadBtn, {
+            backgroundColor: fileInfo === null || progress > 0 ? '#9c9898ff' : '#34C759'
+          }]} onPress={handleUpload}>
             <Icon name="cloud-upload" size={22} color="#fff" />
-            <Text style={styles.uploadText}>Upload Now</Text>
+            <Text style={styles.uploadText}>{progress > 0 && progress < 100 ? `Uploading... ${progress}%` : `Upload Now`}</Text>
           </TouchableOpacity>
         </View>
+
       </View>
     </View>
   );
