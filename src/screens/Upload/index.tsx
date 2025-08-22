@@ -6,12 +6,15 @@ import HeaderBar from "rn-soft-headerbar";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ToastBox from 'react-native-simple-toast';
+import { showLogoutModal } from "../../redux/slices/logoutSlice";
+import { useDispatch } from "react-redux";
 
 
 const Upload = () => {
   const [loading, setLoading] = useState(false);
   const [fileInfo, setFileInfo] = useState<any>(null);
   const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch()
 
   const handlePick = async () => {
     try {
@@ -56,7 +59,14 @@ const Upload = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <HeaderBar title='Upload file' backgroundColor='#007AFF' textColor='#fff' rightIcon={<Icon name="logout" size={22} color={'#fff'} />} />
+      <HeaderBar
+      shadow
+        title='Upload file'
+        backgroundColor='#007AFF'
+        textColor='#fff'
+        onRightPress={() => dispatch(showLogoutModal())}
+        rightIcon={<Icon name="logout" size={22} color={'#fff'} />}
+      />
       <View style={styles.container}>
 
         <View style={styles.card}>

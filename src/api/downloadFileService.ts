@@ -1,5 +1,6 @@
 import RNFS from 'react-native-fs';
 import { Platform, PermissionsAndroid } from 'react-native';
+import BaseSetting from '../config/settings';
 
 const BASE_URL = 'http://192.168.1.59:8080';
 
@@ -21,8 +22,7 @@ export const downloadFile = async (
     }
 
     const safeFileName = filename.replace(/[^a-z0-9.\-_]/gi, '_');
-    const downloadUrl = `${BASE_URL}/file/download/${id}`;
-
+    const downloadUrl = `${BASE_URL}${BaseSetting.endpoints.downloadFile}/${id}`;
     const downloadDest =
       Platform.OS === 'android'
         ? `${RNFS.DownloadDirectoryPath}/${safeFileName}`
@@ -43,7 +43,6 @@ export const downloadFile = async (
         onProgress(percentage);
       },
     });
-
     const response = await ret.promise;
 
     if (response.statusCode === 200) {

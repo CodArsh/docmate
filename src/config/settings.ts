@@ -21,7 +21,8 @@ const BaseSetting = {
     dashboardData: '/dashboard',
     historyList: '/file',
     deleteFile: '/file',
-    downloadFile: '/file/download'
+    downloadFile: '/file/download',
+    shareFile: '/share'
   },
 };
 

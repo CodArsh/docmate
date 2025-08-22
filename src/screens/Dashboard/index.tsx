@@ -1,17 +1,55 @@
-import { View, Text, TouchableOpacity, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import HeaderBar from 'rn-soft-headerbar'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from './styles'
-import { recentUploads } from '../../config/constantsData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showLogoutModal } from '../../redux/slices/logoutSlice';
 import ToastBox from 'react-native-simple-toast';
 import { fetchFiles } from '../../api/fetchFilesService';
+import { useFileActions } from '../../hooks/useFileActions';
+import FileCard from '../../components/CardList/CardList';
+import { RootState } from '../../redux';
+
+type FileItem = {
+    _id: string;
+    filename: string;
+    createdAt: string;
+    type: string;
+    size: any;
+};
 
 const Dashboard = () => {
     const dispatch = useDispatch()
     const [type, setTypes] = useState([])
+    const userData = useSelector((state: RootState) => state.user);
+    const {
+        files,
+        downloadingIds,
+        downloadProgress,
+        getFilesList,
+        handleDelete,
+        handleDownload,
+        handleShare
+    } = useFileActions();
+
+
+    useEffect(() => {
+        getFilesList()
+    }, [])
+
+
+    const renderItem = ({ item }: { item: FileItem }) => (
+        <FileCard
+            item={item}
+            downloadingIds={downloadingIds}
+            downloadProgress={downloadProgress}
+            handleDownload={handleDownload}
+            handleDelete={handleDelete}
+            handleShare={handleShare}
+        />
+    );
+
 
     useEffect(() => {
         dashboardApi()
@@ -30,7 +68,15 @@ const Dashboard = () => {
     return (
         <View style={{ flex: 1, backgroundColor: '#f1f1f1ff' }}>
             <StatusBar backgroundColor={'#007AFF'} barStyle={'light-content'} />
-            <HeaderBar title='Dashboard' backgroundColor='#007AFF' textColor='#fff' rightIcon={<Icon name="logout" size={22} color={'#fff'} />} onRightPress={() => dispatch(showLogoutModal())} />
+            <HeaderBar
+                shadow
+                title={String(userData?.name).toUpperCase()}
+                subTitle={String(userData?.email)}
+                backgroundColor='#007AFF'
+                textColor='#fff'
+                rightIcon={<Icon name="logout" size={22} color={'#fff'} />}
+                onRightPress={() => dispatch(showLogoutModal())}
+            />
 
             <View style={styles.filesOuter}>
                 <Text style={styles.title}>Files</Text>
@@ -58,21 +104,15 @@ const Dashboard = () => {
                 </View>
             </View>
 
-            <View style={styles.filesOuter}>
-                <Text style={styles.title}>Recent uploads</Text>
-                {
-                    recentUploads?.map((item) => {
-                        return (
-                            <TouchableOpacity activeOpacity={0.5} key={item?.id?.toString()} >
-                                <View style={styles.recentContainer}>
-                                    <Text style={{ color: '#3e4a57ff' }}>{item?.contentName}</Text>
-                                    <Text style={{ color: '#3e4a57ff' }}>{item?.size}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
-
+            <View style={{ paddingHorizontal: 20 }}>
+                <Text style={[styles.title, { marginTop: 5 }]}>Recent uploads</Text>
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={files.slice(0, 3)}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={renderItem}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                />
             </View>
         </View>
     )
