@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { pick } from "@react-native-documents/picker";
 import { uploadFile } from "../../api/fileUploadService";
 import HeaderBar from "rn-soft-headerbar";
@@ -8,6 +8,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import ToastBox from 'react-native-simple-toast';
 import { showLogoutModal } from "../../redux/slices/logoutSlice";
 import { useDispatch } from "react-redux";
+import { ImageBundle } from "../../config/imageBundle";
 
 
 const Upload = () => {
@@ -60,7 +61,7 @@ const Upload = () => {
   return (
     <View style={{ flex: 1 }}>
       <HeaderBar
-      shadow
+        shadow
         title='Upload file'
         backgroundColor='#007AFF'
         textColor='#fff'
@@ -68,10 +69,10 @@ const Upload = () => {
         rightIcon={<Icon name="logout" size={22} color={'#fff'} />}
       />
       <View style={styles.container}>
-
+        <Image source={ImageBundle.upload} style={{ alignSelf: 'center', width: 200, marginBottom: 30, height: 200, borderRadius: 10 }} />
         <View style={styles.card}>
           {/* Title */}
-          <Text style={styles.title}>Upload Your File</Text>
+          <Text style={styles.title}>Upload once, access everywhere.</Text>
 
           {/* File Name Field */}
           {
@@ -96,7 +97,7 @@ const Upload = () => {
             <Text style={styles.uploadText}>{progress > 0 && progress < 100 ? `Uploading... ${progress}%` : `Upload Now`}</Text>
           </TouchableOpacity>
         </View>
-
+        <Text style={{marginTop:10}}>📂 Upload up to 100MB per file</Text>
       </View>
     </View>
   );

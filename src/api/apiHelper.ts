@@ -18,15 +18,17 @@ const api = axios.create({
 api.interceptors.request.use(
   // @ts-ignore
   (config: AxiosRequestConfig) => {
-    // const state = store.getState();
+
+    const state = store.getState();
     // @ts-ignore
-    // const token = state.userData?.userData?.accessToken;
+    const token = state?.token?.accessToken;
+    // console.log(token)
 
     // Set Authorization token if it exists
-    // if (token) {
-    // @ts-ignore
-    // config.headers['Authorization'] = `Bearer ${token}`;
-    // }
+    if (token) {
+      // @ts-ignore
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
 
     // Dynamically set Content-Type based on the isMultipart flag
     // @ts-ignore

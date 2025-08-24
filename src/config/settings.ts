@@ -4,7 +4,7 @@ const BaseSetting = {
   name: 'Docmate',
   displayName: 'Docmate',
   appVersionCode: '1',
-  api: 'http://192.168.1.59:8080',
+  api: 'http://192.168.31.239:8080',
   nWidth: Dimensions.get('window').width,
   nHeight: Dimensions.get('window').height,
   sameSize: Dimensions.get('screen').height,

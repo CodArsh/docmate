@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { signupUser } from "../../api/signupService";
 import ToastBox from 'react-native-simple-toast';
 import { isEmpty } from 'lodash'
+import { ImageBundle } from "../../config/imageBundle";
 
 const Signup = ({ navigation }: any) => {
   const [name, setName] = useState("");
@@ -21,6 +22,7 @@ const Signup = ({ navigation }: any) => {
   };
   return (
     <View style={styles.container}>
+       <Image source={ImageBundle.icon} style={{alignSelf:'center', width:150, height:150}} />
       <Text style={styles.title}>Create Account 🎉</Text>
       <Text style={styles.subtitle}>Sign up to get started</Text>
 
@@ -61,7 +63,7 @@ const Signup = ({ navigation }: any) => {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.link}>Already have an account? Login</Text>
+          <Text style={styles.link}>Already have an account? Sign in</Text>
         </TouchableOpacity>
       </View>
     </View>

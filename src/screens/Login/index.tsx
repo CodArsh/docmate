@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, Image } from "react-native";
 import { isEmpty } from 'lodash'
 import { loginUser } from "../../api/loginService";
 import ToastBox from 'react-native-simple-toast';
 import { useDispatch } from "react-redux";
 import { setAccessToken } from "../../redux/slices/tokenSlice";
 import { setUserData } from "../../redux/slices/userSlice";
+import { ImageBundle } from "../../config/imageBundle";
 
 const Login = ({ navigation }: any) => {
   const [email, setEmail] = useState("");
@@ -37,7 +38,8 @@ const Login = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
-      <Text style={styles.title}>Welcome Back 👋</Text>
+       <Image source={ImageBundle.icon} style={{alignSelf:'center', width:150, height:150}} />
+      <Text style={styles.title}>Files made easy 👋</Text>
 
       <View>
         <TextInput
@@ -57,7 +59,7 @@ const Login = ({ navigation }: any) => {
         />
 
         <TouchableOpacity disabled={(isEmpty(email) || isEmpty(password))} style={[(isEmpty(email) || isEmpty(password)) ? styles.offBtn : styles.btn]} onPress={() => handleLogin()}>
-          <Text style={styles.btnText}>Sign Up</Text>
+          <Text style={styles.btnText}>Sign in</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
@@ -78,9 +80,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#222",
+    fontSize: 20,
+    color: "#464545ff",
     textAlign: "center",
     marginBottom: 25,
   },
