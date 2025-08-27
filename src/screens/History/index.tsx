@@ -27,7 +27,7 @@ const History = () => {
     downloadingIds,
     downloadProgress,
     setRefreshing,
-    getFilesList,
+    getFetchSharedList,
     handleDelete,
     handleDownload,
     handleShare
@@ -35,7 +35,7 @@ const History = () => {
 
 
   useEffect(() => {
-    getFilesList()
+    getFetchSharedList()
   }, [])
   const dispatch = useDispatch()
 
@@ -47,6 +47,7 @@ const History = () => {
       handleDownload={handleDownload}
       handleDelete={handleDelete}
       handleShare={handleShare}
+      history
     />
   );
 
@@ -77,7 +78,7 @@ const History = () => {
               refreshing={refreshing}
               onRefresh={() => {
                 setRefreshing(true);
-                getFilesList();
+                getFetchSharedList();
               }}
             />
           }

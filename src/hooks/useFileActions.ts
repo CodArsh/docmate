@@ -4,6 +4,7 @@ import { fetchHistoryList } from "../api/fetchHistoryList";
 import { deleteFileService } from "../api/deleteFileService";
 import { downloadFile } from "../api/downloadFileService";
 import { shareFileService } from "../api/shareFileService";
+import { fetchSharedList } from "../api/fetchSharedService";
 
 export const useFileActions = () => {
   const [files, setFiles] = useState<any[]>([]);
@@ -14,6 +15,19 @@ export const useFileActions = () => {
   const getFilesList = async () => {
     try {
       const response = await fetchHistoryList();
+      if (response.status === 200) {
+        setFiles(response.data);
+      }
+    } catch (error) {
+      ToastBox.show("Error while fetching files list", 10);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const getFetchSharedList = async () => {
+    try {
+      const response = await fetchSharedList();
       if (response.status === 200) {
         setFiles(response.data);
       }
@@ -38,7 +52,6 @@ export const useFileActions = () => {
 
   const handleShare = async (item: any) => {
     try {
-      console.log("-- > ",item)
       const response = await shareFileService(item);
       if (response?.status === 200) {
         ToastBox.show(response?.message, 10);
@@ -78,6 +91,7 @@ export const useFileActions = () => {
     downloadingIds,
     downloadProgress,
     getFilesList,
+    getFetchSharedList,
     handleDelete,
     handleDownload,
     handleShare

@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 import { Platform, PermissionsAndroid } from 'react-native';
 import BaseSetting from '../config/settings';
 
-const BASE_URL = 'http://192.168.31.239:8080';
+const BASE_URL = 'http://192.168.1.7:8080';
 
 export type DownloadProgressCallback = (progress: number) => void;
 

@@ -6,18 +6,13 @@ import { formatFileSize } from "../../utils/formatFileSize";
 import { truncateText } from "../../utils/truncateText"
 
 type FileCardProps = {
-    item: {
-        _id: string;
-        filename: string;
-        size: number;
-        type: string;
-        createdAt: string;
-    };
+    item: any
     downloadingIds: string[];
     downloadProgress: Record<string, number>;
     handleDownload: (id: string, filename: string) => void;
     handleDelete: (id: string) => void;
     handleShare: (item: any) => void;
+    history?: any
 };
 
 const FileCard: React.FC<FileCardProps> = ({
@@ -27,10 +22,11 @@ const FileCard: React.FC<FileCardProps> = ({
     handleDownload,
     handleDelete,
     handleShare,
+    history
 }) => {
     return (
         <View style={styles.card}>
-            <View style={styles.infoRow}>
+            <View style={[styles.infoRow, { marginBottom: history ? 0 : 12 }]}>
                 <Icon
                     name="insert-drive-file"
                     size={30}
@@ -46,48 +42,56 @@ const FileCard: React.FC<FileCardProps> = ({
                     }}
                 >
                     <View style={{ marginLeft: 10 }}>
-                        <Text style={styles.fileName}>{truncateText(item.filename)}</Text>
+                        <Text style={styles.fileName}>{history ? truncateText(item?.file?.filename) : truncateText(item?.filename)}</Text>
                         <Text style={styles.meta}>
-                            {item.type} • {formatFileSize(item.size)}
+                            {history ? item?.file?.type : item?.type} • {history ? formatFileSize(item?.file?.size) : formatFileSize(item.size)}
                         </Text>
-                        <Text style={styles.date}>
-                            Uploaded on: {moment(item.createdAt).format("DD MMM YYYY, hh:mm A")}
-                        </Text>
+
+                        {
+                            history ? <Text style={styles.date}>
+                                To: {item?.receivedEmail}
+                            </Text> : <Text style={styles.date}>
+                                Uploaded on: {moment(item?.createdAt).format("DD MMM YYYY, hh:mm A")}
+                            </Text>
+                        }
+
                     </View>
 
                     {/* Actions */}
-                    <View style={styles.actions}>
-                        <TouchableOpacity
-                            style={styles.actionBtn}
-                            onPress={() => handleDownload(item._id, item.filename)}
-                        >
-                            {downloadingIds?.includes(item._id) ? (
-                                <Text style={{ color: "green", fontWeight: "bold" }}>
-                                    {downloadProgress[item._id] || 0}%
-                                </Text>
-                            ) : (
-                                <Icon name="file-download" size={26} color="#16a02fb9" />
-                            )}
-                        </TouchableOpacity>
+                    {
+                        !history && <View style={styles.actions}>
+                            <TouchableOpacity
+                                style={styles.actionBtn}
+                                onPress={() => handleDownload(item._id, item.filename)}
+                            >
+                                {downloadingIds?.includes(item._id) ? (
+                                    <Text style={{ color: "green", fontWeight: "bold" }}>
+                                        {downloadProgress[item._id] || 0}%
+                                    </Text>
+                                ) : (
+                                    <Icon name="file-download" size={26} color="#16a02fb9" />
+                                )}
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => handleShare(item)} style={styles.actionBtn} disabled={downloadingIds?.includes(item._id)}>
-                            <Icon name="share" size={23} color={downloadingIds?.includes(item._id) ? '#b0b0b0ff' : "#007bffa4"} />
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleShare(item)} style={styles.actionBtn} disabled={downloadingIds?.includes(item._id)}>
+                                <Icon name="share" size={23} color={downloadingIds?.includes(item._id) ? '#b0b0b0ff' : "#007bffa4"} />
+                            </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={styles.actionBtn}
-                            disabled={downloadingIds?.includes(item._id)}
-                            onPress={() => handleDelete(item._id)}
-                        >
-                            <Icon
-                                name="delete"
-                                size={26}
-                                color={
-                                    downloadingIds?.includes(item._id) ? "#b0b0b0ff" : "#df6666b5"
-                                }
-                            />
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity
+                                style={styles.actionBtn}
+                                disabled={downloadingIds?.includes(item._id)}
+                                onPress={() => handleDelete(item._id)}
+                            >
+                                <Icon
+                                    name="delete"
+                                    size={26}
+                                    color={
+                                        downloadingIds?.includes(item._id) ? "#b0b0b0ff" : "#df6666b5"
+                                    }
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
             </View>
         </View>
@@ -111,7 +115,6 @@ const styles = StyleSheet.create({
     infoRow: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: 12
     },
     fileName: {
         fontSize: 16,
