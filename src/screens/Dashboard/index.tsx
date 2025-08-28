@@ -10,6 +10,7 @@ import { fetchFiles } from '../../api/fetchFilesService';
 import { useFileActions } from '../../hooks/useFileActions';
 import FileCard from '../../components/CardList/CardList';
 import { RootState } from '../../redux';
+import EmailModal from '../../components/EmailModal';
 
 type FileItem = {
     _id: string;
@@ -22,6 +23,9 @@ type FileItem = {
 const Dashboard = () => {
     const dispatch = useDispatch()
     const [type, setTypes] = useState([])
+    const [showModal, setShowModal] = useState(false);
+    const [fileData, setFileData] = useState<any>()
+    const [email, setEmail] = useState<any>("");
     const userData = useSelector((state: RootState) => state.user);
     const {
         files,
@@ -33,6 +37,19 @@ const Dashboard = () => {
         handleShare
     } = useFileActions();
 
+    const handleSend = (item: any) => {
+        setShowModal(true)
+        setFileData(item)
+    };
+
+    const sendNow = (email: string) => {
+        const finalObj = {
+            email: email,
+            ...fileData
+        }
+        handleShare(finalObj)
+        setEmail("")
+    }
 
     useEffect(() => {
         getFilesList()
@@ -46,7 +63,7 @@ const Dashboard = () => {
             downloadProgress={downloadProgress}
             handleDownload={handleDownload}
             handleDelete={handleDelete}
-            handleShare={handleShare}
+            handleShare={() => handleSend(item)}
         />
     );
 
@@ -114,6 +131,14 @@ const Dashboard = () => {
                     contentContainerStyle={{ paddingBottom: 100 }}
                 />
             </View>
+
+            <EmailModal
+                visible={showModal}
+                onClose={() => setShowModal(false)}
+                onSend={sendNow}
+                email={email}
+                setEmail={setEmail}
+            />
         </View>
     )
 }
